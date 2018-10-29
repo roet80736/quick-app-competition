@@ -29,5 +29,8 @@
     "koa-router": "^7.2.1",
     "socket.io": "^2.1.0",
     "webpack": "^3.11.0"
+  },
+  "dependencies": {
+    "npm": "^6.4.1"
   }
 }
