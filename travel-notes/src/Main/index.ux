@@ -1,0 +1,20 @@
+<template>
+  <div >
+    <map id="map" showmylocation="{{showmylocation}}" @tap="tap" scale="{{scale}}">
+    </map>
+  </div>
+</template>
+<script>
+  export default {
+    private: {
+      scale: 15,
+      showmylocation: true
+    },
+    tap() {
+      this.$element("map").moveToMyLocation()
+    }
+  }
+</script>
+<style>
+
+</style>

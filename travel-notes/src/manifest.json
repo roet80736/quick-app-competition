@@ -1,6 +1,6 @@
 {
-  "package": "com.application.demo",
-  "name": "travel-notes",
+  "package": "com.xiciwutong.travel.notes",
+  "name": "游记",
   "versionName": "1.0.0",
   "versionCode": "1",
   "minPlatformVersion": "101",
@@ -17,7 +17,7 @@
     "logLevel": "off"
   },
   "router": {
-    "entry": "Demo",
+    "entry": "Main",
     "pages": {
       "Demo": {
         "component": "index"
@@ -26,6 +26,9 @@
         "component": "index"
       },
       "About": {
+        "component": "index"
+      },
+      "Main": {
         "component": "index"
       }
     }
@@ -43,6 +46,10 @@
         "titleBarText": "详情页"
       },
       "About": {
+        "menu": false
+      },
+      "Main": {
+        "titleBarText": "游记",
         "menu": false
       }
     }
