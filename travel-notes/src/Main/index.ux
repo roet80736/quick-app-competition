@@ -1,6 +1,6 @@
 <template>
   <div >
-    <map id="map" showmylocation="{{showmylocation}}" @tap="tap" scale="{{scale}}">
+    <map id="map" showmylocation="{{showmylocation}}" scale="{{scale}}" controls="{{controls}}" @controltap="controlTap" @tap="mapTap">
     </map>
   </div>
 </template>
@@ -8,11 +8,43 @@
   export default {
     private: {
       scale: 15,
-      showmylocation: true
+      showmylocation: true,
+      controls: [{
+        id: 1,
+        position: { top: "20px", right: "15px", width: "70px", heigth: "70px"},
+        iconPath: "/Common/images/person.jpg",
+        clickable: true
+      },
+      {
+        id: 2,
+        position: { bottom: "80px", left: "50px", width: "70px", heigth: "70px"},
+        iconPath: "/Common/images/point.jpg",
+        clickable: true
+      }]
     },
-    tap() {
-      this.$element("map").moveToMyLocation()
+    controlTap(res) {
+      const that = this
+      console.log("点击图标:", res);
+      switch (res.controlId) {
+        case 1:
+          console.log("点击个人中心头像");
+          break
+        case 2:
+          console.log("回到当前位置");
+          this.$element("map").moveToMyLocation();
+          break
+        default:
+          console.log("没有图标");
+      }
+    },
+    mapTap(res) {
+      console.log("点击地图:", res);
+      let latitude = res.latitude;
+      let longitude = res.longitude;
+      
     }
+
+
   }
 </script>
 <style>

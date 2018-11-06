@@ -14,7 +14,7 @@
     { "origin": "*" }
   ],
   "config": {
-    "logLevel": "off"
+    "logLevel": "debug"
   },
   "router": {
     "entry": "Main",
