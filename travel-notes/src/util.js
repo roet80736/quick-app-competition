@@ -1,6 +1,9 @@
 /**
  * 显示菜单
  */
+import config from "./config"
+import fetch from '@system.fetch'
+
 function showMenu () {
   const prompt = require('@system.prompt')
   const router = require('@system.router')
@@ -66,7 +69,42 @@ function createShortcut () {
   })
 }
 
+/**
+ * 发送请求
+ */
+function request (url, data, successBack, faileBack, method="POST",) {
+  console.log("引入的config:", config);
+  let apiUrl = config.config.apiUrl;
+  fetch.fetch({
+    url: apiUrl + url,
+    data: JSON.stringify(data),
+    header: {
+      'Content-Type': 'application/json;charset=UTF-8', // 默认值
+    },
+    method: method,
+    success: function (response) {
+      let data = JSON.parse(response.data);
+      console.log("接口返回数据:", data);
+      if (data.code != 200) {
+        faileBack(data.msg);
+      } else {
+        successBack(data.data)
+      }
+    },
+    fail: function (err, code) {
+      console.log(`handling fail, code = ${code}`)
+      faileBack(err);
+    }
+  })
+}
+function login (data, successBack, faileBack) {
+  console.log("login接口上送参数:", data);
+  request("user/login", data, successBack, faileBack);
+}
+
 export default {
   showMenu,
-  createShortcut
+  createShortcut,
+  login,
+  
 }

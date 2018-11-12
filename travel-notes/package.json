@@ -15,7 +15,7 @@
     "hap-update": "hap update"
   },
   "devDependencies": {
-    "hap-toolkit": "0.0.36",
+    "hap-toolkit": "file:d:\\Program Files (x86)\\Quickapp\\resources\\app\\extensions\\hap-debugger\\toolkit\\hap-toolkit.tgz",
     "babel-cli": "^6.10.1",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.1",

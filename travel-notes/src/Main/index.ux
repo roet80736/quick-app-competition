@@ -1,10 +1,17 @@
 <template>
-  <div >
-    <map id="map" showmylocation="{{showmylocation}}" scale="{{scale}}" controls="{{controls}}" @controltap="controlTap" @tap="mapTap">
-    </map>
+  <div class="page">
+    <!-- <div class="content">
+        <canvas class="screen" id="screen"></canvas>
+    </div> -->
+    <div class="map">
+      <map id="map" showmylocation="{{showmylocation}}" scale="{{scale}}" controls="{{controls}}" @controltap="controlTap" @tap="mapTap"> </map>
+    </div>
   </div>
 </template>
 <script>
+  import fetch from '@system.fetch'
+  import router from '@system.router'
+
   export default {
     private: {
       scale: 15,
@@ -22,12 +29,29 @@
         clickable: true
       }]
     },
+    onInit() {
+      console.log("页面初始化");
+    },
+    onShow () {
+      console.log("页面显示");
+      // this.drawScreen();
+    },
+    // 画弹幕
+    drawScreen () {
+      console.log("开始画弹幕");
+      const canvas = this.$element('screen'); //获取 canvas 组件
+      const ctx = canvas.getContext('2d'); //获取 canvas 绘图上下文
+      ctx.fillText("Hello world", 10, 50);
+    },
     controlTap(res) {
       const that = this
       console.log("点击图标:", res);
       switch (res.controlId) {
         case 1:
           console.log("点击个人中心头像");
+          router.push ({
+            uri: '/person'
+          })
           break
         case 2:
           console.log("回到当前位置");
@@ -48,5 +72,25 @@
   }
 </script>
 <style>
-
+  .page{
+    height: 100%;
+   width: 100%
+  }
+  .content {
+      flex-direction: column;
+      align-items: center;
+      top: 0px;
+      left: 0px;
+      height: 30px;
+      width: 100%;
+  }
+ .screen {
+      height: 30px;
+      width: 30px;
+ }
+ .map{
+   z-index: 1000;
+   height: 100%;
+   width: 100%
+ }
 </style>
