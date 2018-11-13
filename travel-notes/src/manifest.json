@@ -37,6 +37,9 @@
       },
       "login": {
         "component": "index"
+      },
+      "register": {
+        "component": "index"
       }
     }
   },
