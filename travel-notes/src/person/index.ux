@@ -1,0 +1,95 @@
+<template>
+    <div>
+        <div class="userinfo" if="false">
+            <!-- <img src="/Common/images/head_bg.jpg" class="bg"> -->
+            <img class="userinfo-avatar" src="/Common/logo.png" />
+            <text class="nickName">慈溪问题</text>
+        </div>
+        <div class="login">
+            <input class="btn" type="button" value="点击登录" onclick="login" />
+        </div>
+      
+    </div>
+  </template>
+  <script>
+    import fetch from '@system.fetch'
+    import router from '@system.router'
+  
+    export default {
+      protected: {
+        userinfo: ''
+      },
+      onInit() {
+        console.log("页面初始化");
+        this.$page.setTitleBar({ text: '个人中心' })
+        console.log("登录返回的个人信息:", this.userinfo);
+      },
+      onShow () {
+        console.log("页面显示");
+        // this.drawScreen();
+      },
+      login () {
+          console.log("点击登录按钮");
+          router.push ({
+            uri: '/login'
+          })
+      }
+  
+    }
+  </script>
+  <style>
+.userinfo {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 300px;
+    color: #ffffff;
+    background-color: rgb(76, 190, 0);
+  }
+  .userinfo .bg{
+    background-color: rgb(97, 226, 105);
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+  }
+  .userinfo-avatar {
+    position: fixed;
+    z-index: 1;
+    width: 128px;
+    height: 128px;
+    margin: 20px;
+    border-radius: 20px;
+  }
+  .nickName{
+    position: fixed;
+    z-index: 1;
+  }
+
+  .login{
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 300px;
+    color: #ffffff;
+    background-color: rgb(50, 125, 238);
+  }
+  .btn {
+    width: 220px;
+    height: 86px;
+    margin-top: 5px;
+    border-radius: 43px;
+    background-color: #09ba07;
+    font-size: 30px;
+    color: #ffffff;
+  }
+  </style>
+  
