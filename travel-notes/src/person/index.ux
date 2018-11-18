@@ -1,28 +1,59 @@
 <template>
-    <div>
-        <div class="userinfo" if="false">
+    <div class="container">
+        <div class="userinfo" if="{{userId != ''}}">
             <!-- <img src="/Common/images/head_bg.jpg" class="bg"> -->
-            <img class="userinfo-avatar" src="/Common/logo.png" />
-            <text class="nickName">慈溪问题</text>
+            <!-- <img class="userinfo-avatar" src="/Common/logo.png" /> -->
+            <text class="nickName">昵称 : </text><text class="nickName">{{nickName}}</text>
         </div>
-        <div class="login">
+        <div class="login" if="{{userId == ''}}">
             <input class="btn" type="button" value="点击登录" onclick="login" />
         </div>
-      
+        <div class="allList">
+          <div class="list" onclick="personInfo">
+            <img src="/Common/images/personIcon.jpg" />
+            <text>个人资料</text>
+          </div>
+          <div class="list">
+            <img src="/Common/images/zuji.jpg" />
+            <text>我的足迹</text>
+          </div>
+        </div>
     </div>
   </template>
   <script>
     import fetch from '@system.fetch'
     import router from '@system.router'
+    import storage from '@system.storage'
+    import prompt from '@system.prompt'
   
     export default {
       protected: {
-        userinfo: ''
+        userId: '',
+        nickName: ''
       },
       onInit() {
         console.log("页面初始化");
         this.$page.setTitleBar({ text: '个人中心' })
-        console.log("登录返回的个人信息:", this.userinfo);
+        storage.get({
+          key : "userId",
+          success: (data)=>{
+            console.log("用户的id:", data);
+            this.userId = data;
+          },
+          fail : (data, code)=>{
+            console.log("获取用户id失败:", data, code)
+          }
+        })
+        storage.get({
+          key : "nickName",
+          success: (data)=>{
+            console.log("用户的昵称:", data);
+            this.nickName = data;
+          },
+          fail : (data, code)=>{
+            console.log("获取用户昵称失败:", data, code)
+          }
+        })
       },
       onShow () {
         console.log("页面显示");
@@ -33,11 +64,24 @@
           router.push ({
             uri: '/login'
           })
+      },
+      personInfo (){
+        prompt.showToast({
+            message: '有待后期完善',
+            duration: 1
+          })
+          return;
       }
   
     }
   </script>
   <style>
+    .container{
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+    }
 .userinfo {
     position: fixed;
     display: flex;
@@ -67,8 +111,9 @@
     border-radius: 20px;
   }
   .nickName{
-    position: fixed;
-    z-index: 1;
+    font-size: 60px;
+    font-weight: bold;
+    text-align: center;
   }
 
   .login{
@@ -90,6 +135,15 @@
     background-color: #09ba07;
     font-size: 30px;
     color: #ffffff;
+  }
+  .allList{
+    margin-top: 322px;
+    width: 100%;
+    height: 100%;
+  }
+  .list{
+    width: 100%;
+    height:80px;
   }
   </style>
   

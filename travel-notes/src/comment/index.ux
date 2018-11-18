@@ -1,0 +1,162 @@
+<template>
+    <div class="container">
+        <div class="addressInfo">
+            <text>{{addressInfo}}</text>
+        </div>
+        <div class="list">
+            <text class="oneComment">评论列表</text>
+        </div>
+        <div class="comment">
+            <label>留言 : </label>
+            <input type="text" placeholder="对地点留迹" name="content" value="{{content}}" onchange="getComment"
+            />
+        </div>
+        <input type="button" class="button" onclick="comment" value="留言"></input>
+    </div>
+</template>
+<script>
+    import fetch from '@system.fetch'
+    import router from '@system.router'
+    import request from './../util'
+    import prompt from '@system.prompt'
+    import storage from '@system.storage'
+
+    export default {
+        protected: {
+            latitude: '',
+            longitude: '',
+            addressInfo: '',
+            content: '',
+            userId: ''
+
+        },
+        onInit() {
+            console.log("页面初始化");
+            this.$page.setTitleBar({ text: '留迹' })
+            storage.get({
+                key: "userId",
+                success: (data) => {
+                    console.log("用户的id:", data);
+                    this.userId = data;
+                },
+                fail: (data, code) => {
+                    console.log("获取用户id失败:", data, code)
+                }
+            })
+            request.address_info({ "latitude": this.latitude, "longitude": this.longitude }, (data) => {
+                console.log("获取到的地址信息:", data);
+                this.addressInfo = data.addressInfo;
+            }, (msg) => {
+                prompt.showToast({
+                    message: msg,
+                    duration: 1
+                })
+            })
+
+        },
+        onShow() {
+            console.log("页面显示");
+            // this.drawScreen();
+        },
+        getComment(e) {
+            console.log("留言为:", e.value);
+            this.content = e.value;
+        },
+        comment() {
+            console.log("用户评论");
+            if (this.content == "") {
+                prompt.showToast({
+                    message: '评论内容不能为空',
+                    duration: 1
+                })
+                return;
+            }
+            request.comment({ "latitude": this.latitude, "longitude": this.longitude, "content": this.content, "userId": this.userId }, (data) => {
+                prompt.showToast({
+                    message: "发表评论成功",
+                    duration: 1
+                })
+            }, (msg) => {
+                prompt.showToast({
+                    message: msg,
+                    duration: 1
+                })
+            });
+
+
+
+        }
+
+
+
+
+    }
+</script>
+<style>
+    .container {
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+        min-height: 100%;
+        width: 750px;
+    }
+
+    .addressInfo {
+        height: 200px;
+        width: 750px;
+        background-color: deepskyblue;
+    }
+
+    .addressInfo text {
+        text-align: center;
+        width: 750px;
+        font-size: 40px;
+        font-weight: bold;
+    }
+
+    .list {
+        width: 750px;
+        margin-top: 18px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .oneComment {
+        padding-left: 20px;
+        height: 180px;
+        width: 750px;
+        font-weight: bold;
+        font-size: 40px;
+        border: 1px solid #008000;
+        border-top: 0;
+    }
+
+    .comment {
+        margin-top: 30px;
+        padding-bottom: 20px;
+        border: 1px solid #2330a3;
+        height: 150px;
+        ;
+    }
+
+    .comment label {
+        font-size: 40px;
+        color: #2330a3;
+        font-weight: bold;
+    }
+
+    .comment input {
+        padding-left: 10px;
+        font-size: 40px;
+        width: 650px;
+    }
+
+    .button {
+        border: 1px solid #061deb;
+        background-color: antiquewhite;
+        height: 100px;
+        width: 100px;
+
+
+    }
+</style>

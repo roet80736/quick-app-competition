@@ -6,7 +6,16 @@
         <div class="formPassword">
           <label class="labelPassword">密  码 : </label><input onchange="getPassword" type="password" placeholder="请输入密码" class="password" value="{{password}}"/>
         </div>
-      
+        <div class="formPassword">
+          <label class="labelNickName">昵  称 : </label><input onchange="getNickName" type="text" placeholder="请输入昵称" class="nickName" value="{{nickName}}"/>
+        </div>
+        <div class="formGender">
+          <label>男</label><input onchange="getGender" name="gender" type="radio" checked="true" value="1" />
+          <label>女</label><input onchange="getGender" name="gender" type="radio" value="2" />
+        </div>
+        <div class="link">
+          <a class="register" onclick="register">注册</a>
+      </div>
     </div>
   </template>
   <script>
@@ -14,11 +23,14 @@
     import router from '@system.router'
     import request from './../util'
     import prompt from '@system.prompt'
+    import storage from '@system.storage'
   
     export default {
       private: {
         username: '',
-        password: ''
+        password: '',
+        nickName: '',
+        gender: 1
       },
       onInit() {
         console.log("页面初始化");
@@ -34,7 +46,67 @@
       },
       getPassword (e) {
         this.password = e.value;
+      },
+      getNickName (e) {
+        this.nickName = e.value;
+      },
+      getGender (e) {
+        console.log("点击性别的单选框:", e);
+        this.gender = e.value;
+      },
+      register () {
+        console.log("点击注册按钮:");
+        if (this.username == "") {
+          prompt.showToast({
+            message: '请输入用户名',
+            duration: 1
+          })
+          return;
+        }
+        if (this.password == "") {
+          prompt.showToast({
+            message: '请输入密码',
+            duration: 1
+          })
+          return;
+        }
+        if (this.nickName == "") {
+          prompt.showToast({
+            message: '请输入昵称',
+            duration: 1
+          })
+          return;
+        }
+        request.register({"username": this.username, "password": this.password, "nickName": this.nickName, "gender": this.gender}, (data)=>{
+          console.log("注册返回:", data);
+          storage.set({
+            key : "userId",
+            value: data.id
+          })
+          storage.set({
+            key : "nickName",
+            value: data.nickName
+          })
+          prompt.showToast({
+            message: "注册成功",
+            duration: 1
+          })
+          setTimeout(()=>{
+            router.push({
+              uri: "/person"
+            })
+          }, 1000);
+        },(msg)=>{
+          console.log("注册失败返回:", msg);
+          prompt.showToast({
+            message: msg,
+            duration: 1
+          })
+          return;
+        });
+        
       }
+      
   
     }
   </script>
@@ -60,6 +132,9 @@
       border: 3px solid #0be428;
       height: 100px;
     }
+    .formGender{
+      height: 100px;
+    }
     .labelUsername{
       font-size: 30px;
     }
@@ -67,11 +142,13 @@
       font-size: 30px;
     }
     .link{
-      margin-top: 20px;
+      background-color: bisque;
+      border: 2px solid #0be428;
+      margin-top: 30px;
+      margin-left: 620px;
     }
     .register{
-      margin-left: 20px;
-      font-size: 40px;
+      font-size: 60px;
       font-weight: bold;
     }
     .login{

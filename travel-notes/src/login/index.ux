@@ -18,6 +18,7 @@
     import router from '@system.router'
     import request from './../util'
     import prompt from '@system.prompt'
+    import storage from '@system.storage'
   
     export default {
       private: {
@@ -57,6 +58,17 @@
         }
         request.login({"username":this.username, "password": this.password}, (data)=>{
           console.log("登录返回:", data);
+          storage.set({
+            key : "userId",
+            value: data.id
+          })
+          storage.set({
+            key : "nickName",
+            value: data.nickName
+          })
+          router.push({
+            uri: "/person"
+          })
         }, (msg)=>{
           console.log("登录失败返回:", msg);
           prompt.showToast({

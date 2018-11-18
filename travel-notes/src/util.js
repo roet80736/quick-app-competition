@@ -101,10 +101,25 @@ function login (data, successBack, faileBack) {
   console.log("login接口上送参数:", data);
   request("user/login", data, successBack, faileBack);
 }
+function register(data, successBack, faileBack) {
+  console.log("register 接口上送参数:", data);
+  request("user/register", data, successBack, faileBack);
+}
+function address_info(data, successBack, faileBack) {
+  console.log("address_info 接口上送参数:", data);
+  request("map/address_info", data, successBack, faileBack);
+}
+function comment(data, successBack, faileBack) {
+  console.log("comment 接口上送参数:", data);
+  request("comment/comment", data, successBack, faileBack);
+}
 
 export default {
   showMenu,
   createShortcut,
   login,
+  register,
+  address_info,
+  comment,
   
 }

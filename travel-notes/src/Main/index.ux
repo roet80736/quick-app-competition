@@ -65,7 +65,10 @@
       console.log("点击地图:", res);
       let latitude = res.latitude;
       let longitude = res.longitude;
-      
+      router.push ({
+            uri: '/comment',
+            params: {"latitude" : latitude, "longitude" : longitude}
+          })
     }
 
 

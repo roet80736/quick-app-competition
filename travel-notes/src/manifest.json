@@ -9,7 +9,8 @@
     { "name": "system.prompt" },
     { "name": "system.router" },
     {"name": "system.fetch"},
-    { "name": "system.shortcut" }
+    { "name": "system.shortcut" },
+    {"name": "system.storage"}
   ],
   "permissions": [
     { "origin": "*" }
@@ -39,6 +40,9 @@
         "component": "index"
       },
       "register": {
+        "component": "index"
+      },
+      "comment": {
         "component": "index"
       }
     }
