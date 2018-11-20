@@ -4,40 +4,50 @@
         <canvas class="screen" id="screen"></canvas>
     </div> -->
     <div class="map">
-      <map id="map" showmylocation="{{showmylocation}}" scale="{{scale}}" controls="{{controls}}" @controltap="controlTap" @tap="mapTap"> </map>
+      <map id="map" showmylocation="{{showmylocation}}" latitude="{{latitude}}" longitude="{{longitude}}" scale="{{scale}}" controls="{{controls}}"
+        @controltap="controlTap" @tap="mapTap" markers="{{markers}}" @regionchange="regionchange">
+      </map>
     </div>
   </div>
 </template>
 <script>
   import fetch from '@system.fetch'
   import router from '@system.router'
+  import request from './../util'
+  import prompt from '@system.prompt'
+  import storage from '@system.storage'
 
+
+  const markerIcon = "/Common/images/markerIcon.jpg"
   export default {
     private: {
-      scale: 15,
+      scale: 16,
       showmylocation: true,
       controls: [{
         id: 1,
-        position: { top: "20px", right: "15px", width: "70px", heigth: "70px"},
+        position: { top: "20px", right: "15px", width: "70px", heigth: "70px" },
         iconPath: "/Common/images/person.jpg",
         clickable: true
       },
       {
         id: 2,
-        position: { bottom: "80px", left: "50px", width: "70px", heigth: "70px"},
+        position: { bottom: "80px", left: "50px", width: "70px", heigth: "70px" },
         iconPath: "/Common/images/point.jpg",
         clickable: true
-      }]
+      }],
+      // 气泡
+      markers: []
     },
     onInit() {
       console.log("页面初始化");
     },
-    onShow () {
+    onShow() {
       console.log("页面显示");
       // this.drawScreen();
+      this.showComment();
     },
     // 画弹幕
-    drawScreen () {
+    drawScreen() {
       console.log("开始画弹幕");
       const canvas = this.$element('screen'); //获取 canvas 组件
       const ctx = canvas.getContext('2d'); //获取 canvas 绘图上下文
@@ -49,13 +59,15 @@
       switch (res.controlId) {
         case 1:
           console.log("点击个人中心头像");
-          router.push ({
+          router.push({
             uri: '/person'
           })
           break
         case 2:
           console.log("回到当前位置");
+          let that = this;
           this.$element("map").moveToMyLocation();
+          this.showComment();
           break
         default:
           console.log("没有图标");
@@ -65,35 +77,102 @@
       console.log("点击地图:", res);
       let latitude = res.latitude;
       let longitude = res.longitude;
-      router.push ({
-            uri: '/comment',
-            params: {"latitude" : latitude, "longitude" : longitude}
-          })
+      router.push({
+        uri: '/comment',
+        params: { "latitude": latitude, "longitude": longitude }
+      })
+    },
+    regionchange(res) {
+      console.log("地图视野发生变化");
+      this.showComment();
+    },
+    // 显示当前中心点位置附近的评论
+    showComment() {
+      let that = this;
+      that.$element('map').getCenterLocation({
+        success: function (res) {
+          let latitude = res.latitude;
+          let longitude = res.longitude;
+          that.markers = [];
+          console.log("中心点纬度：", res.latitude, "\n", "中心点经度：", res.longitude);
+          request.comment_list({ latitude, longitude }, (data) => {
+            console.log("点位附近的评论列表:", data);
+            for (let i = 0; i < data.length; i++) {
+              let oneData = data[i];
+              let oneMarker = {
+                latitude: oneData.latitude,
+                longitude: oneData.longitude,
+                iconPath: markerIcon,
+                width: "80px",
+                height: "80px",
+                callout: {
+                  content: oneData.content,
+                  color: '#FF7733',
+                  padding: "20px 5px 20px 5px",
+                  borderRadius: "20px",
+                  textAlign: "left",
+                  display: "always"
+                }
+              };
+              if (that.markers.length >= 20) {
+                return;
+              }
+              // 原数组有,继续下一个
+              let flag = that.findComment(oneMarker, that.markers);
+              if (flag) {
+                continue;
+              }
+              that.markers.push(oneMarker);
+            }
+
+
+
+          }, (msg) => {
+            prompt.showToast({
+              message: msg,
+              duration: 1
+            })
+          });
+
+
+        }
+      })
+    },
+    findComment(item, arr) {
+      for (let i = 0; i < arr.length; i++) {
+        if (item.longitude == arr[i].longitude && item.latitude == arr[i].latitude) {
+          return true;
+        }
+      }
+      return false;
     }
 
 
   }
 </script>
 <style>
-  .page{
+  .page {
     height: 100%;
-   width: 100%
+    width: 100%
   }
+
   .content {
-      flex-direction: column;
-      align-items: center;
-      top: 0px;
-      left: 0px;
-      height: 30px;
-      width: 100%;
+    flex-direction: column;
+    align-items: center;
+    top: 0px;
+    left: 0px;
+    height: 30px;
+    width: 100%;
   }
- .screen {
-      height: 30px;
-      width: 30px;
- }
- .map{
-   z-index: 1000;
-   height: 100%;
-   width: 100%
- }
+
+  .screen {
+    height: 30px;
+    width: 30px;
+  }
+
+  .map {
+    z-index: 1000;
+    height: 100%;
+    width: 100%
+  }
 </style>
